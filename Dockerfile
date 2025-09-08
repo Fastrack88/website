@@ -23,13 +23,11 @@ RUN for i in 1 2 3; do \
     done
 
 
-
-# Copy app
 COPY . .
-
-# after COPY . .
 COPY start.sh /usr/local/bin/start.sh
 RUN sed -i 's/\r$//' /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+CMD ["/usr/bin/env","bash","-lc","/usr/local/bin/start.sh"]
+
 
 # Build app (uses your "build" script)
 RUN yarn build
