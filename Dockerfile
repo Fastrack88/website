@@ -1,20 +1,28 @@
-# Development Dockerfile for Medusa
-FROM node:20-alpine
+# Dockerfile
+FROM node:20-bullseye-slim
 
-# Set working directory
+# Build deps for native modules
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    bash python3 make g++ ca-certificates \
+ && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /server
 
-# Copy package files and npm config
-COPY package.json ./
+# Cache dependencies
+COPY package.json yarn.lock ./
+RUN yarn config set registry https://registry.npmjs.org \
+ && yarn install --frozen-lockfile --non-interactive --network-timeout 600000
 
-# Install all dependencies using npm
-RUN npm install
-
-# Copy source code
+# Copy app
 COPY . .
 
-# Expose the port Medusa runs on
+# Ensure start.sh is executable & no CRLF
+RUN sed -i 's/\r$//' /server/start.sh && chmod +x /server/start.sh
+
+# Build app (uses your "build" script)
+RUN yarn build
+
 EXPOSE 9000
 
-# Start with migrations and then the development server
-CMD ["./start.sh"]
+# Run under bash (never node)
+CMD ["/usr/bin/env", "bash", "-lc", "/server/start.sh"]
