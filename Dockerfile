@@ -10,9 +10,11 @@ WORKDIR /server
 
 # Cache dependencies
 WORKDIR /server
+ARG CACHEBUST=2
 COPY package.json yarn.lock ./
 RUN yarn config set registry https://registry.npmjs.org \
  && yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
 
 
 # Copy app
