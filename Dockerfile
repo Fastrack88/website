@@ -27,8 +27,9 @@ RUN for i in 1 2 3; do \
 # Copy app
 COPY . .
 
-# Ensure start.sh is executable & no CRLF
-RUN sed -i 's/\r$//' /server/start.sh && chmod +x /server/start.sh
+# after COPY . .
+COPY start.sh /usr/local/bin/start.sh
+RUN sed -i 's/\r$//' /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
 # Build app (uses your "build" script)
 RUN yarn build
