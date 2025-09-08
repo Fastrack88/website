@@ -31,7 +31,7 @@ done
 # --- Run migrations (idempotent) ---
 echo "• Running migrations..."
 set -x
-medusa migrations run
+npx -y @medusajs/medusa-cli@latest migrations --action run
 set +x
 echo "✓ Migrations completed"
 
