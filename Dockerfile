@@ -4,11 +4,11 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /server
 
-# Copy package files and npm config
-COPY package.json yarn.lock ./
+# Copy package files and yarn config
+COPY package.json yarn.lock .yarnrc.yml ./
 
-# Install all dependencies using npm
-RUN npm install
+# Install all dependencies using yarn
+RUN yarn install
 
 # Copy source code
 COPY . .
@@ -17,5 +17,4 @@ COPY . .
 EXPOSE 9000
 
 # Start with migrations and then the development server
-COPY start.sh /usr/local/bin/start.sh
-RUN sed -i 's/\r$//' /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
+CMD ["./start.sh"]
