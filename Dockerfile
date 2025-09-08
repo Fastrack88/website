@@ -9,9 +9,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /server
 
 # Cache dependencies
+WORKDIR /server
 COPY package.json yarn.lock ./
 RUN yarn config set registry https://registry.npmjs.org \
  && yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+
 
 # Copy app
 COPY . .
