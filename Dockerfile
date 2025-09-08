@@ -5,7 +5,7 @@ FROM node:20-alpine
 WORKDIR /server
 
 # Copy package files and npm config
-COPY package.json package-lock.json ./
+COPY package.json ./
 
 # Install all dependencies using npm
 RUN npm install
