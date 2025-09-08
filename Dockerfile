@@ -10,10 +10,17 @@ WORKDIR /server
 
 # Cache dependencies
 WORKDIR /server
-ARG CACHEBUST=2
 COPY package.json yarn.lock ./
+
 RUN yarn config set registry https://registry.npmjs.org \
- && yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+ && yarn config set @medusajs:registry https://registry.npmjs.org \
+ && npm config set registry https://registry.npmjs.org \
+ && sed -i 's#https://registry.yarnpkg.com#https://registry.npmjs.org#g' yarn.lock
+
+RUN for i in 1 2 3; do \
+      yarn install --frozen-lockfile --non-interactive --network-timeout 600000 && break || \
+      (echo "Retry $i/3 after failure..." && sleep 5); \
+    done
 
 
 
