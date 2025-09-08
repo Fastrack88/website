@@ -17,4 +17,5 @@ COPY . .
 EXPOSE 9000
 
 # Start with migrations and then the development server
-CMD ["./start.sh"]
+COPY start.sh /usr/local/bin/start.sh
+RUN sed -i 's/\r$//' /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
