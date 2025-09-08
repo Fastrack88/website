@@ -1,32 +1,20 @@
-# Pin a stable Node base (avoid :latest)
-FROM node:20-bullseye-slim
+# Development Dockerfile for Medusa
+FROM node:20-alpine
 
-# System deps for native modules
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 make g++ ca-certificates \
- && rm -rf /var/lib/apt/lists/*
+# Set working directory
+WORKDIR /server
 
-WORKDIR /app/medusa
+# Copy package files and npm config
+COPY package.json package-lock.json ./
 
-# Install deps with cache
-COPY package.json yarn.lock ./
-RUN yarn config set registry https://registry.npmjs.org \
- && yarn install --frozen-lockfile --non-interactive --network-timeout 600000
+# Install all dependencies using npm
+RUN npm install
 
-# Copy the rest
+# Copy source code
 COPY . .
 
-# Build
-RUN yarn build
-
-# Startup script
-COPY start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
-
+# Expose the port Medusa runs on
 EXPOSE 9000
 
-# IMPORTANT: let EasyPanel inject runtime envs; don't bake empty defaults
-# (No ARG/ENV block here unless you set real defaults)
-
-# Use JSON form, call our script
-CMD ["sh", "-lc", "start.sh"]
+# Start with migrations and then the development server
+CMD ["./start.sh"]
