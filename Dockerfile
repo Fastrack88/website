@@ -16,9 +16,6 @@ RUN yarn config set registry https://registry.npmjs.org \
 # Copy the rest
 COPY . .
 
-# Optional CLI
-RUN yarn global add @medusajs/medusa-cli
-
 # Build
 RUN yarn build
 
